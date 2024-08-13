@@ -1,7 +1,13 @@
 import Modal from "./Modal";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import MyComponent from "./MyComponent";
+import { loanInputContext } from "./contexts/LoanFormInputContext";
+import { UserContext } from "./contexts/UserContext";
+
+
 
 export default function LoanForm() {
+  const userData = UserContext(useContext);
   const [errorMessage, seterrorMessage] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [LoanInput, setLoanInput] = useState({
@@ -30,40 +36,83 @@ export default function LoanForm() {
     }
   }
 
+  function HandleNameInputChange(value) {
+    setLoanInput({ ...LoanInput, name: value });
+  }
+
+  function HandlePhoneNumberInputChange(value) {
+    setLoanInput({ ...LoanInput, phoneNumber: value });
+  }
+
+  function HandleAgeInputChange(value) {
+    setLoanInput({ ...LoanInput, age: value });
+  }
+
   return (
     <div
       onClick={handleDivClick}
       className="flex flex-col justify-center items-center text-black "
     >
+      <h1 style={{ color:"white"}} > hello {userData.name} </h1>
       <form className="flex flex-col bg-sky-900 text-white p-5 rounded-3xl shadow-xl w-[800px] ">
         <h1 className="text-3xl flex justify-center py-3">Requesting a Loan</h1>
         <hr />
-        <label className="mt-3">Name:</label>
+
+        <loanInputContext.Provider
+          value={{
+            value: LoanInput.name,
+            HandleChange: HandleNameInputChange,
+            LabelTitle: "name",
+          }}
+        >
+          <MyComponent />
+        </loanInputContext.Provider>
+
+        <loanInputContext.Provider
+          value={{
+            value: LoanInput.age,
+            HandleChange: HandleAgeInputChange,
+            LabelTitle: "age",
+          }}
+        >
+          <MyComponent />
+        </loanInputContext.Provider>
+
+        <loanInputContext.Provider
+          value={{
+            value: LoanInput.phoneNumber,
+            HandleChange: HandlePhoneNumberInputChange,
+            LabelTitle: "phone number",
+          }}
+        >
+          <MyComponent />
+        </loanInputContext.Provider>
+
+        {/* <label className="mt-3">Name:</label>
         <input
           value={LoanInput.name}
           onChange={(event) => {
             setLoanInput({ ...LoanInput, name: event.target.value });
           }}
           className="w-full text-black h-[30px] border-none "
-        />
-
-        <label className="mt-3">Phone Number:</label>
+        /> */}
+        {/* <label className="mt-3">Phone Number:</label>
         <input
           value={LoanInput.phoneNumber}
           onChange={(event) => {
             setLoanInput({ ...LoanInput, phoneNumber: event.target.value });
           }}
           className="w-full text-black h-[30px] border-none "
-        />
+        /> */}
 
-        <label className="mt-3">Age:</label>
+        {/* <label className="mt-3">Age:</label>
         <input
           value={LoanInput.age}
           onChange={(event) => {
             setLoanInput({ ...LoanInput, age: event.target.value });
           }}
           className="w-full text-black h-[30px] border-none "
-        />
+        /> */}
 
         <label className="mt-3 text-center">Are you employee?</label>
         <input
